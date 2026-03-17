@@ -43,7 +43,8 @@ def run():
     interfaces (0.0.0.0) on port 8000.
     """
     host = os.getenv("AGENT_HOST", "0.0.0.0")
-    port = int(os.getenv("AGENT_PORT", 8000))
+    raw_port = os.getenv("AGENT_PORT", "")
+    port = int(raw_port) if raw_port.isdigit() else 8000
     uvicorn.run(app, host=host, port=port)
 
 

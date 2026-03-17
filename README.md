@@ -2,7 +2,7 @@
 
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/gomes89/mosaico-ip-agent/docker-ghcr.yml?label=build)
 [![REUSE status](https://api.reuse.software/badge/github.com/gomes89/mosaico-ip-agent)](https://api.reuse.software/info/github.com/gomes89/mosaico-ip-agent)
-![PyPI - Version](https://img.shields.io/pypi/v/mosaico-ip-agent?color=blue)
+![PyPI - Version](https://img.shields.io/pypi/v/mosaico-ip-agent)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/mosaico-ip-agent)
 ![GitHub Release](https://img.shields.io/github/v/release/gomes89/mosaico-ip-agent)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/license/mit)
