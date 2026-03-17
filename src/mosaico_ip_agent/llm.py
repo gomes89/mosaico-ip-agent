@@ -55,9 +55,9 @@ class IPSolutionAgent:
         self.llm_context_length = os.getenv('LLM_CONTEXT_LENGTH', None)
         self.langfuse = initialize_langfuse()
 
-        # Configure LiteLLM to use Langfuse callbacks globally
-        litellm.success_callback = ["langfuse"]
-        litellm.failure_callback = ["langfuse"]
+        # Configure LiteLLM to use Langfuse OTel callbacks globally
+        litellm.success_callback = ["langfuse_otel"]
+        litellm.failure_callback = ["langfuse_otel"]
 
     async def run(self, query: str, mosaico_super_task_id: str = None) -> Dict[str, Any]:
         """
@@ -78,8 +78,7 @@ class IPSolutionAgent:
         """
         metadata = {
             "mosaico_super_task_id": mosaico_super_task_id,
-            "project_name": "ip-solution-agent",
-            "trace_name": "extract-package-info"
+            "generation_name": "extract-package-info",
         }
 
         if mosaico_super_task_id:
