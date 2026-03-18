@@ -27,11 +27,13 @@ parsing from the LLM with the license verification services, and reporting
 the progress and artifacts back through the MOSAICO A2A event queue.
 """
 
+from uuid import uuid4
+
 from a2a.server.agent_execution import AgentExecutor, RequestContext
 from a2a.server.events.event_queue import EventQueue
 from a2a.types import (
     TaskState, TaskStatus, TaskStatusUpdateEvent, TaskArtifactUpdateEvent,
-    Artifact, Part, TextPart, DataPart
+    Artifact, Part, TextPart, DataPart, Message, Role
 )
 from a2a.utils import new_task
 from typing_extensions import override
@@ -115,7 +117,8 @@ class IPSolutionAgentExecutor(AgentExecutor):
                 if isinstance(res, dict):
                     explanation = (
                         f"Analyzed {name} ({p_type}/{provider}) with version {ver}. The license is: {res['license']} "
-                        f"[Source: {res['source']}].")
+                        f"[Source: {res['source']}]."
+                    )
                     sol_artifact = Artifact(
                         parts=[
                             Part(root=DataPart(data={
@@ -137,21 +140,21 @@ class IPSolutionAgentExecutor(AgentExecutor):
                     explanation = f"Package {name} not found."
                     task_state = TaskState.failed
 
-            await event_queue.enqueue_event(TaskArtifactUpdateEvent(
-                context_id=task.context_id, task_id=task.id,
-                artifact=Artifact(
-                    parts=[Part(root=TextPart(text=explanation))],
-                    artifact_id='explanation'
-                )
+            await event_queue.enqueue_event(Message(
+                message_id=str(uuid4()),
+                context_id=task.context_id,
+                task_id=task.id,
+                role=Role.agent,
+                parts=[Part(root=TextPart(text=explanation))]
             ))
 
         except Exception as e:
-            await event_queue.enqueue_event(TaskArtifactUpdateEvent(
-                context_id=task.context_id, task_id=task.id,
-                artifact=Artifact(
-                    parts=[Part(root=TextPart(text=str(e)))],
-                    artifact_id='error_result'
-                )
+            await event_queue.enqueue_event(Message(
+                message_id=str(uuid4()),
+                context_id=task.context_id,
+                task_id=task.id,
+                role=Role.agent,
+                parts=[Part(root=TextPart(text=str(e)))]
             ))
             task_state = TaskState.failed
 
