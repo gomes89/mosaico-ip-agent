@@ -59,7 +59,10 @@ agent_card = AgentCard(
     description="IP Solution Agent for MOSAICO",
     version="1.0.0",
     protocol_version="0.3.0",
-    url=f"http://{os.getenv('AGENT_CARD_HOST', "localhost")}:{os.getenv('AGENT_CARD_PORT', "8000")}/",
+    url=(
+        f"http://{os.getenv('AGENT_CARD_HOST', os.getenv('HOST', '0.0.0.0'))}:"
+        f"{p if (p := os.getenv('AGENT_CARD_PORT', os.getenv('PORT', ''))).isdigit() else '9000'}/"
+    ),
     capabilities=AgentCapabilities(
         streaming=False,
         extensions=[mosaico_super_task_id_extension]

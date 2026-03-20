@@ -38,13 +38,13 @@ def run():
     """
     Starts the Uvicorn ASGI server to serve the FastAPI application.
 
-    Retrieves the binding host and port from the `AGENT_HOST` and `AGENT_PORT`
+    Retrieves the binding host and port from the `HOST` and `PORT`
     environment variables. If not provided, it defaults to binding on all
-    interfaces (0.0.0.0) on port 8000.
+    interfaces (0.0.0.0) on port 9000.
     """
-    host = os.getenv("AGENT_HOST", "0.0.0.0")
-    raw_port = os.getenv("AGENT_PORT", "")
-    port = int(raw_port) if raw_port.isdigit() else 8000
+    host = os.getenv("HOST", "0.0.0.0")
+    raw_port = os.getenv("PORT", "")
+    port = int(raw_port) if raw_port.isdigit() else 9000
     uvicorn.run(app, host=host, port=port)
 
 

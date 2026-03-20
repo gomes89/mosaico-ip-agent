@@ -60,15 +60,19 @@ source .venv/bin/activate
 The agent is configured using environment variables. You can set these in your terminal or use a .env file if you 
 install a package like python-dotenv later.
 
-| Environment Variable | Default Value          | Description                                             |
-|:---------------------|:-----------------------|:--------------------------------------------------------|
-| AGENT_HOST           | 0.0.0.0                | The host IP for the Uvicorn server to bind to.          |
-| AGENT_PORT           | 8000                   | The port for the Uvicorn server.                        |
-| AGENT_URL            | http://localhost:8000/ | The URL broadcasted in the Agent Card.                  |
-| LLM_API_BASE         | http://localhost:11434 | The endpoint where the LLM provider is running.         |
-| LLM_API_KEY          | None                   | The API key to access the LLM endpoint.                 |
-| LLM_CONTEXT_LENGTH   | None                   | Explicit context window size (specifically for Ollama). |
-| LLM_MODEL_NAME       | ollama/qwen2.5:0.5b    | The model identifier for LiteLLM to request.            |
+| Environment Variable | Default Value              | Description                                             |
+|:---------------------|:---------------------------|:--------------------------------------------------------|
+| HOST                 | 0.0.0.0                    | The host IP for the Uvicorn server to bind to.          |
+| PORT                 | 9000                       | The port for the Uvicorn server.                        |
+| AGENT_CARD_HOST      | localhost                  | The host for the URL in the Agent Card.                 |
+| AGENT_CARD_PORT      | PORT                       | The port for the URL in the Agent Card.                 |
+| LLM_API_BASE         | http://localhost:11434     | The endpoint where the LLM provider is running.         |
+| LLM_API_KEY          | (None)                     | The API key to access the LLM endpoint.                 |
+| LLM_CONTEXT_LENGTH   | (None)                     | Explicit context window size (specifically for Ollama). |
+| LLM_MODEL_NAME       | ollama/qwen2.5:0.5b        | The model identifier for LiteLLM to request.            |
+| LANGFUSE_HOST        | https://cloud.langfuse.com | The base URL of the Langfuse observability server.      |
+| LANGFUSE_PUBLIC_KEY  | (None/Required)            | The public key for the Langfuse observability server.   |
+| LANGFUSE_SECRET_KEY  | (None/Required)            | The secret key for the Langfuse observability server.   |
 
 ## Running the Agent
 

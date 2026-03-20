@@ -13,8 +13,8 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "a2a-sdk[http-server]>=0.3.25",
-    "langfuse>=4.0.0",
-    "litellm>=1.82.3",
+    "langfuse>=4.0.1",
+    "litellm>=1.82.4",
     "pydantic>=2.12.5",
     "requests>=2.32.5",
     "uvicorn>=0.41.0",
