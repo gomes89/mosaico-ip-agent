@@ -41,10 +41,8 @@ from a2a.types import (
 )
 from fastapi import Response
 
+from . import __version__
 from .executor import IPSolutionAgentExecutor
-from .config import initialize_langfuse
-
-langfuse = initialize_langfuse(blocked_scopes=["a2a-python-sdk"])
 
 executor = IPSolutionAgentExecutor()
 
@@ -57,7 +55,7 @@ mosaico_super_task_id_extension = AgentExtension(
 agent_card = AgentCard(
     name="IP Solution Agent",
     description="IP Solution Agent for MOSAICO",
-    version="1.0.0",
+    version=__version__,
     protocol_version="0.3.0",
     url=(
         f"http://{os.getenv('AGENT_CARD_HOST', os.getenv('HOST', '0.0.0.0'))}:"

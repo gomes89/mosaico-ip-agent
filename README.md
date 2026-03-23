@@ -1,11 +1,11 @@
 # MOSAICO IP Agent
 
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/gomes89/mosaico-ip-agent/docker-ghcr.yml?label=build)
-[![REUSE status](https://api.reuse.software/badge/github.com/gomes89/mosaico-ip-agent)](https://api.reuse.software/info/github.com/gomes89/mosaico-ip-agent)
 ![PyPI - Version](https://img.shields.io/pypi/v/mosaico-ip-agent)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/mosaico-ip-agent)
 ![GitHub Release](https://img.shields.io/github/v/release/gomes89/mosaico-ip-agent)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/license/mit)
+[![REUSE status](https://api.reuse.software/badge/github.com/gomes89/mosaico-ip-agent)](https://api.reuse.software/info/github.com/gomes89/mosaico-ip-agent)
+![GitHub License](https://img.shields.io/github/license/gomes89/mosaico-ip-agent)
 
 This agent uses an LLM to parse natural language queries about software libraries, extracts package details, 
 and fetches real-time licensing information from the Eclipse Foundation and ClearlyDefined APIs.
@@ -94,10 +94,10 @@ You can verify the agent is running by querying the health check endpoint:
 
 ```bash
 # Linux / macOS Bash:
-curl -f http://localhost:8000/health
+curl -f http://localhost:9000/health
 
 # Windows PowerShell:
-Invoke-RestMethod -Uri "http://localhost:8000/health"
+Invoke-RestMethod -Uri "http://localhost:9000/health"
 ```
 
 ## License

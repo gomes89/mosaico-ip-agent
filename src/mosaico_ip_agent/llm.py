@@ -53,7 +53,7 @@ class IPSolutionAgent:
         self.llm_api_key = os.getenv('LLM_API_KEY', None)
         self.llm_model_name = os.getenv('LLM_MODEL_NAME', 'ollama/qwen2.5:0.5b')
         self.llm_context_length = os.getenv('LLM_CONTEXT_LENGTH', None)
-        self.langfuse = initialize_langfuse()
+        self.langfuse = initialize_langfuse(blocked_scopes=["a2a-python-sdk"])
 
         # Configure LiteLLM to use Langfuse OTel callbacks globally
         litellm.success_callback = ["langfuse_otel"]
