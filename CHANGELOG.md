@@ -3,6 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+- Add multi-arch Docker builds and optimize CI pipelines
 - Fix missing text in the chat UI by sending the explanation as a Message event
 
 ## [0.1.1] - 2026-03-18

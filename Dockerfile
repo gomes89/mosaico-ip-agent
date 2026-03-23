@@ -19,30 +19,74 @@
 #
 #  SPDX-License-Identifier: MIT
 
-# Stage 1
+# ==========================================
+# Stage 1: Builder
+# ==========================================
 FROM python:3.14-slim AS builder
-WORKDIR /app
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvbin/uv
-ENV PATH="/uvbin:${PATH}"
+# Copy the uv binary
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-COPY pyproject.toml uv.lock ./
-RUN uv pip install --no-cache --prefix=/install -r pyproject.toml
+# Configure uv behavior:
+# - UV_LINK_MODE=copy: Prevent hardlink issues across file systems
+# - UV_COMPILE_BYTECODE=1: Pre-compile Python for faster startup
+# - UV_PYTHON_DOWNLOADS=never: Force uv to use the system Python 3.14
+# - UV_PROJECT_ENVIRONMENT=/app: Tell uv to build the virtualenv directly into /app
+ENV UV_LINK_MODE=copy \
+    UV_COMPILE_BYTECODE=1 \
+    UV_PYTHON_DOWNLOADS=never \
+    UV_PROJECT_ENVIRONMENT=/app
 
-# Stage 2
+WORKDIR /build
+
+# Install dependencies using cache and bind mounts.
+# We mount uv.lock and pyproject.toml temporarily so they don't bloat the layer.
+RUN --mount=type=cache,target=/root/.cache \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync \
+        --locked \
+        --no-dev \
+        --no-install-project
+
+# ==========================================
+# Stage 2: Runtime
+# ==========================================
 FROM python:3.14-slim
-WORKDIR /app
 
-COPY --from=builder /install /usr/local
-COPY src/ ./src/
-COPY docker-entrypoint.sh /docker-entrypoint.sh
+# Install tini for proper signal handling (CTRL+C, SIGTERM)
+RUN apt-get update -qy && \
+    apt-get install -qyy --no-install-recommends tini && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-ENV PYTHONPATH=/app/src
+# Create a non-root user and group for security
+RUN groupadd -r app && \
+    useradd -r -d /app -g app -N app
 
+# Copy the pre-built virtual environment from the builder stage.
+# We use --chown to ensure the 'app' user owns these files.
+COPY --from=builder --chown=app:app /app /app
+
+# Copy the application code and entrypoint
+COPY --chown=app:app src/ /app/src/
+COPY --chown=app:app docker-entrypoint.sh /docker-entrypoint.sh
+
+# Make the entrypoint executable
 RUN chmod +x /docker-entrypoint.sh
 
-EXPOSE 8000
+# Set the PATH to prioritize the virtual environment's binaries,
+# and set PYTHONPATH so Python can find the source code.
+ENV PATH="/app/bin:${PATH}" \
+    PYTHONPATH="/app/src"
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+# Drop root privileges
+USER app
+WORKDIR /app
+
+EXPOSE 9000
+
+# Use tini as the init process to wrap the entrypoint
+ENTRYPOINT ["/usr/bin/tini", "--", "/docker-entrypoint.sh"]
 
 CMD ["python", "-m", "mosaico_ip_agent"]
