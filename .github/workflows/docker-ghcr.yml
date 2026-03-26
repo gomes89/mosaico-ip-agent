@@ -16,7 +16,7 @@ jobs:
       clean_release_version: ${{ steps.get-release-version.outputs.version }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Get Python Version from Dockerfile
         id: get-python-version

@@ -106,28 +106,31 @@ class IPSolutionAgentExecutor(AgentExecutor):
                 explanation = f"Extraction failure: {result['content']}"
                 task_state = TaskState.failed
             else:
-                name, p_type, ver = parts[0], parts[1], parts[2]
+                name, p_type, version = parts[0], parts[1], parts[2]
                 providers = {"npm": "npmjs", "pypi": "pypi", "maven": "mavencentral"}
                 provider = providers.get(p_type.lower(), "-")
+                namespace = '-'
 
-                res = await query_eclipse_foundation(p_type, name, ver, provider)
+                res = await query_eclipse_foundation(p_type, provider, namespace, name, version)
                 if not res:
-                    res = await query_clearly_defined(p_type, name, ver, provider)
+                    res = await query_clearly_defined(p_type, provider, namespace, name, version)
 
                 if isinstance(res, dict):
                     explanation = (
-                        f"Analyzed {name} ({p_type}/{provider}) with version {ver}. The license is: {res['license']} "
+                        f"Analyzed {name} ({p_type}/{provider}/{namespace}) with version {version}. "
+                        f"The license is: {res['license']} "
                         f"[Source: {res['source']}]."
                     )
                     sol_artifact = Artifact(
                         parts=[
                             Part(root=DataPart(data={
-                                "package": name,
+                                "name": name,
                                 "type": p_type,
-                                "version": ver,
+                                "provider": provider,
+                                'namespace': namespace,
+                                "version": version,
                                 "license": res["license"],
-                                "source": res["source"],
-                                "provider": provider
+                                "source": res["source"]
                             }))
                         ],
                         artifact_id='ip_analysis_result'

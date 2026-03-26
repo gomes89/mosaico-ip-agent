@@ -3,6 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+- Add support for package namespaces.
 
 ## [0.1.2] - 2026-03-23
 - Add multi-arch Docker builds and optimize CI pipelines.

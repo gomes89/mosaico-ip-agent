@@ -29,7 +29,7 @@ This module provides asynchronous functions to query third-party services
 import httpx
 
 
-async def query_eclipse_foundation(p_type: str, name: str, version: str, provider: str):
+async def query_eclipse_foundation(p_type: str, provider: str, namespace: str, name: str, version: str):
     """
     Queries the Eclipse Foundation GitLab repository for license curation data.
 
@@ -39,9 +39,13 @@ async def query_eclipse_foundation(p_type: str, name: str, version: str, provide
 
     Args:
         p_type (str): The package type/ecosystem (e.g., 'npm', 'pypi', 'maven').
+        provider (str): provider (str): The upstream registry or source hosting the package
+            (e.g., 'npmjs', 'pypi', 'mavencentral', 'github').
+        namespace (str): The organization, group, or user scope (e.g., '@babel' for npm or 'org.apache' for Maven);
+            use '-' if no namespace exists.
         name (str): The exact name of the software package.
         version (str): The specific version of the package.
-        provider (str): The registry or provider namespace (e.g., 'npmjs', 'pypi', 'mavencentral').
+
 
     Returns:
         dict | None: A dictionary containing the 'license' string and the 'source' name
@@ -50,7 +54,7 @@ async def query_eclipse_foundation(p_type: str, name: str, version: str, provide
     """
     if not version or version == "-" or version.lower() == "latest":
         return None
-    ef_id = f"{p_type.lower()}/{provider}/-/{name}/{version}"
+    ef_id = f"{p_type.lower()}/{provider}/{namespace}/{name}/{version}"
     url = f"https://gitlab.eclipse.org/eclipsefdn/emo-team/iplab/-/raw/master/curations/{ef_id}/info.json"
     try:
         async with httpx.AsyncClient() as client:
@@ -63,7 +67,7 @@ async def query_eclipse_foundation(p_type: str, name: str, version: str, provide
     return None
 
 
-async def query_clearly_defined(p_type: str, name: str, version: str, provider: str):
+async def query_clearly_defined(p_type: str, provider: str, namespace: str, name: str, version: str):
     """
     Queries the ClearlyDefined API for package license definitions.
 
@@ -73,10 +77,13 @@ async def query_clearly_defined(p_type: str, name: str, version: str, provider: 
 
     Args:
         p_type (str): The package type/ecosystem (e.g., 'npm', 'pypi', 'maven').
+        provider (str): provider (str): The upstream registry or source hosting the package
+            (e.g., 'npmjs', 'pypi', 'mavencentral', 'github').
+        namespace (str): The organization, group, or user scope (e.g., '@babel' for npm or 'org.apache' for Maven);
+            use '-' if no namespace exists.
         name (str): The exact name of the software package.
         version (str): The specific version of the package. If missing, '-', or 'latest',
             the URL adapts to query general package data without a strict version constraint.
-        provider (str): The registry or provider namespace (e.g., 'npmjs', 'pypi', 'mavencentral').
 
     Returns:
         dict | None: A dictionary containing the 'license' string and the 'source' name
@@ -84,7 +91,7 @@ async def query_clearly_defined(p_type: str, name: str, version: str, provider: 
         or the package definition is not found.
     """
     headers = {"Accept": "application/json", "Accept-Version": "1.0.0"}
-    url = f"https://api.clearlydefined.io/definitions/{p_type}/{provider}/-/{name}"
+    url = f"https://api.clearlydefined.io/definitions/{p_type}/{provider}/{namespace}/{name}"
     if version and version != "-" and version.lower() != "latest":
         url += f"/{version}"
 
