@@ -32,7 +32,7 @@ from typing import Dict, Any
 
 import litellm
 
-from .config import initialize_langfuse
+from .observability import initialize_langfuse
 
 
 class IPSolutionAgent:
@@ -87,13 +87,13 @@ class IPSolutionAgent:
         prompt = (
             "Instructions: Extract only the library name, type, and version.\n"
             "Format: name|type|version\n"
-            "Types: npm, pypi, maven (Strictly use these labels only)\n"
+            "Types: npm, pypi, maven, go (Strictly use these labels only)\n"
             "Default version: if not provided by the input, use -\n\n"
-            "Input: Check the pypi package requests\n"
+            "Input: Check the license for pypi package requests\n"
             "Output: requests|pypi|-\n\n"
-            "Input: find the npm package react version 18\n"
+            "Input: Find the license of npm package react version 18\n"
             "Output: react|npm|18\n\n"
-            "Input: lookup the maven library junit v6.1.0\n"
+            "Input: Lookup the license for maven library junit v6.1.0\n"
             "Output: junit|maven|6.1.0\n\n"
             f"Input: {query}\n"
             "Output:"
